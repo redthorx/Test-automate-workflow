@@ -29,7 +29,7 @@ jobs:
           subject: github push event
           to: ${{secrets.RECIPIENT_EMAIL}}
           from: Github actions bot
-          body: there was a push to repo
+          body: ((there was a push to repo))
           
           
   
