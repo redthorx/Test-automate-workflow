@@ -30,6 +30,22 @@ jobs:
           to: ${{secrets.RECIPIENT_EMAIL}}
           from: Github actions bot
           body: ((there was a push to repo))
+  issue_opened:
+    name: Send email on issue opened
+    if: ${{github.event.issue.opened}}
+    runs-on: ubuntu-latest]
+    steps:
+      - uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.EMAIL}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: github push event
+          to: ${{secrets.RECIPIENT_EMAIL}}
+          from: Github actions bot
+          body: "((issue opened: Issue ${{github.event.issue.number}} ${{github.event.issue.title}} ))"    
+          
   label_trigger:
     name: Send email on issue labelled
     runs-on: ubuntu-latest
