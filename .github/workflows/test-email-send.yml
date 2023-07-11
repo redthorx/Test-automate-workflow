@@ -54,7 +54,15 @@ jobs:
       - run: |
           echo ${{github.actions.event_name}}
           echo ${{github.event.label.name}}
-    
           
+  get_github_context:
+    name: get github context
+    runs-on: ubuntu-latest
+    env: 
+      GITHUB_CONTEXT : ${{ toJson(github) }}
+    steps:
+      - run: echo "$GITHUB_CONTEXT"
+        
+
           
   
