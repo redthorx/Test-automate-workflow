@@ -17,7 +17,7 @@ on:
 jobs:
   push_trigger:
     name: Send email on push
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ !github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: dawidd6/action-send-mail@v3
@@ -32,7 +32,6 @@ jobs:
           body: ((there was a push to repo))
   label_trigger:
     name: Send email on issue labelled
-    if: ${{ !github.event_name == 'push'}}
     runs-on: ubuntu-latest
     steps:
       - run: |
