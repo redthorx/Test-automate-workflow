@@ -48,7 +48,7 @@ jobs:
           
   label_trigger:
     name: Send email on issue labelled
-    if: ${{github.event.label.name}}
+    if: ${{github.event.action == 'labelled' }}
     runs-on: ubuntu-latest
     steps:
       - run: |
