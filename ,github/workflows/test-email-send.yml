@@ -1,0 +1,33 @@
+#This workflow pushes new commits to elastic beanstalk on every push
+
+name: Send email on issue update
+
+on:
+  push:
+    branches: [ "master" ]
+  issues:
+    types: [opened, edited, deleted, closed]
+  issue_comment:
+    types: [created, deleted]
+  release:
+    types: [ published ]
+
+jobs:
+  push_trigger:
+    name: Send email on push
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.EMAIL}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: github push event
+          to: ${{secrets.RECIPIENT_EMAIL}}
+          from: Github actions bot
+          body: there was a push to repo
+          
+          
+  
