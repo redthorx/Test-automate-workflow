@@ -44,7 +44,7 @@ jobs:
           subject: github push event
           to: ${{secrets.RECIPIENT_EMAIL}}
           from: Github actions bot
-          body: "((issue opened: Issue ${{github.event.issue.number}} ${{github.event.issue.title}} ))"    
+          body: "((issue opened: Issue ${{github.event.issue.number}} ${{github.event.issue.title}}))"    
           
   label_trigger:
     name: Send email on issue labelled
