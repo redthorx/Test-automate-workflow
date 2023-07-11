@@ -1,4 +1,4 @@
-#This workflow pushes new commits to elastic beanstalk on every push
+#This workflow sends email based on events
 
 name: Send email on issue update
 
@@ -8,9 +8,9 @@ on:
       - master
       - main
   issues:
-    types: [opened, edited, labeled, deleted, closed]
+    types: [opened, labeled, closed]
   issue_comment:
-    types: [created, deleted]
+    types: [created]
   release:
     types: [ published ]
 
@@ -29,7 +29,7 @@ jobs:
           subject: github push event
           to: ${{secrets.RECIPIENT_EMAIL}}
           from: Github actions bot
-          body: ((there was a push to repo))
+          body: ((A new dev version is available))
   issue_opened:
     name: Send email on issue opened
     if: ${{ github.event.action == 'opened' }}
@@ -44,7 +44,38 @@ jobs:
           subject: github push event
           to: ${{secrets.RECIPIENT_EMAIL}}
           from: Github actions bot
-          body: "((issue opened: Issue ${{github.event.issue.number}} ${{github.event.issue.title}}))"    
+          body: "((issue opened: Issue ${{github.event.issue.number}} ${{github.event.issue.title}}))"
+  issue_comment:
+    name: Send email on comment in issue
+    if: ${{github.event_name == 'issue_comment'}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.EMAIL}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: github push event
+          to: ${{secrets.RECIPIENT_EMAIL}}
+          from: Github actions bot
+          body: "((New comment on Issue ${{github.event.issue.number}} ${{github.event.issue.title}} comment: ${{github.event.comment.body}}))" 
+          
+  issue_closed:
+    name: Send email on issue closed
+    if: ${{ github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.EMAIL}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: github push event
+          to: ${{secrets.RECIPIENT_EMAIL}}
+          from: Github actions bot
+          body: "((issue closed: Issue ${{github.event.issue.number}} ${{github.event.issue.title}}))" 
           
   label_trigger:
     name: Send email on issue labelled
@@ -60,15 +91,32 @@ jobs:
           subject: github push event
           to: ${{secrets.RECIPIENT_EMAIL}}
           from: Github actions bot
-          body: "((issue labelled: Issue ${{github.event.issue.number}} ${{github.event.issue.title}} is now labelled as ${{github.label.name}} ))"
-          
-  get_github_context:
-    name: get github context
+          body: "((issue labelled: Issue ${{github.event.issue.number}} ${{github.event.issue.title}} is now labelled as ${{github.event.label.name}} ))"
+  
+  release_trigger:
+    name: Send email on new release
+    if: ${{github.event_name == 'release' }}
     runs-on: ubuntu-latest
-    env: 
-      GITHUB_CONTEXT : ${{ toJson(github) }}
     steps:
-      - run: echo "$GITHUB_CONTEXT"
+      - uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.EMAIL}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: github push event
+          to: ${{secrets.RECIPIENT_EMAIL}}
+          from: Github actions bot
+          body: "((A new version is available: ${{github.event.release.tag_name}}))"
+
+  
+ # get_github_context:
+ #   name: get github context
+ #   runs-on: ubuntu-latest
+ #   env: 
+ #     GITHUB_CONTEXT : ${{ toJson(github) }}
+ #   steps:
+ #     - run: echo "$GITHUB_CONTEXT"
         
 
           
