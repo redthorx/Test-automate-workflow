@@ -35,8 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo {{github.actions.event_name}}
-          echo {{github.event.label.name}}
+          echo ${{github.actions.event_name}}
+          echo ${{github.event.label.name}}
     
           
           
